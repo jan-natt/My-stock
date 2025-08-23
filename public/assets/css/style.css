@@ -1,0 +1,105 @@
+ :root {
+      --primary-blue: #0d6efd;
+      --dark-blue: #0a192f;
+      --light-gray: #f8f9fa;
+      --market-up: #22c55e;
+      --market-down: #ef4444;
+      --accent-green: #20c997;
+    }
+
+    body {
+      background: var(--light-gray);
+      padding-top: 72px;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    /* Navbar */
+    .navbar {
+      background: var(--dark-blue);
+      padding: 0.8rem 1.2rem;
+      box-shadow: 0 3px 15px rgba(0,0,0,0.2);
+    }
+
+    .navbar-brand {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #fff !important;
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar-brand i {
+      color: var(--accent-green);
+      margin-right: 8px;
+      font-size: 1.6rem;
+    }
+
+    .nav-link {
+      color: rgba(255,255,255,0.85) !important;
+      font-weight: 500;
+      padding: 0.6rem 1rem !important;
+      transition: 0.3s ease;
+    }
+
+    .nav-link:hover, .nav-link.active {
+      color: #fff !important;
+      background: rgba(255,255,255,0.12);
+      border-radius: 6px;
+    }
+
+    /* Market Ticker */
+    .market-ticker {
+      background: #0d253f;
+      color: #fff;
+      padding: 0.4rem 1rem;
+      font-size: 0.85rem;
+      display: flex;
+      gap: 1.5rem;
+      white-space: nowrap;
+      overflow-x: auto;
+    }
+    .market-ticker span {
+      font-weight: 600;
+    }
+    .up { color: var(--market-up); }
+    .down { color: var(--market-down); }
+
+    /* Notification & Auth */
+    .notification-icon {
+      position: relative;
+      margin-right: 15px;
+      font-size: 1.2rem;
+    }
+    .notification-badge {
+      position: absolute;
+      top: -6px;
+      right: -8px;
+      background: var(--market-down);
+      color: #fff;
+      border-radius: 50%;
+      font-size: 0.7rem;
+      padding: 2px 5px;
+    }
+
+    .btn-login {
+      border: 1px solid rgba(255,255,255,0.4);
+      color: #fff;
+      margin-right: 10px;
+    }
+    .btn-login:hover {
+      background: rgba(255,255,255,0.12);
+    }
+    .btn-register {
+      background: var(--primary-blue);
+      border: none;
+      color: #fff;
+    }
+    .btn-register:hover {
+      background: #0b5ed7;
+    }
+
+    @media(max-width: 992px){
+      .market-ticker {
+        font-size: 0.8rem;
+      }
+    }
