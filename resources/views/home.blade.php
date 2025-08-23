@@ -21,7 +21,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#"><i class="fas fa-arrow-trend-up text-success me-1"></i> Top Gainers</a>
+                    <a class="nav-link" href="gainers"><i class="fas fa-arrow-trend-up text-success me-1"></i> Top Gainers</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#"><i class="fas fa-arrow-trend-down text-danger me-1"></i> Top Losers</a>
