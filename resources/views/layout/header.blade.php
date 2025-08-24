@@ -44,8 +44,8 @@
             <a href="#" class="text-white"><i class="fas fa-bell"></i></a>
             <span class="notification-badge">3</span>
           </div>
-          <a href="/login" class="btn btn-sm btn-login">Login</a>
-          <a href="/register" class="btn btn-sm btn-register">Register</a>
+            <a href="/login" class="btn btn-sm btn-login">Login</a>
+          <a href="{{ route('users.index') }}" class="btn btn-sm btn-users">Register</a>
         </div>
       </div>
     </div>
