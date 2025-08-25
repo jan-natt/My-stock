@@ -2,97 +2,114 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+
 use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Support\Facades\File;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
     public function index()
     {
         $users = User::all();
       return view('users.index',compact('users'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
-        return view('users.create');
+        return view('create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6|confirmed',
+            'name' => ['required','string','max:255'],
+            'email' => ['required','email','max:120','unique:users,email'],
+            'phone' => ['nullable','string','max:11'],
+            'password' => ['required','string','min:8','confirmed'],
+            'nid-number' => ['nullable','string','max:10','unique:users,nid_number'],
+            'nid_verification_photo' => ['nallable','image','mimes:jpeg,png,jpg,gif,svg','max:2048'],
+             'user_photo' => ['nullable','image','mimes:jpeg,png,jpg,gif,svg','max:2048'],
         ]);
 
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => bcrypt($validated['password']),
-        ]);
+        //image upload
+        $uploadpath = public_path('uploads');
+        if(!File::exists($uploadpath)) {
+            File::makeDirectory($uploadpath, 0755, true);
+        }
 
-        return redirect()->route('users.index')->with('success', 'User registered successfully!');
-    }
+        if($request->hasFile('nid_verification_photo'))
+            {
+               $file = $request->file('nid_verification_photo');
+               $filename = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
+               $file->move($uploadpath, $filename);
+               $data['nid_verification_photo'] = 'uploads/'.$filename;
+            }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
+            user::create($data);
+
+            return redirect()->back()->with('success', 'User created successfully!');
+        }
+    
     public function show(User $user)
     {
-        //
+        return view('users.show',compact('users'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
+    
     public function edit(User $user)
     {
-        //
+        return view('users.edit',compact('users'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, User $user)
     {
-        //
+        $data = $request->validate([
+            'name' => ['required','string','max:255'],
+            'email' => ['required','email','max:120','unique:users,email,'.$user->id],
+            'phone' => ['nullable','string','max:11'],
+            'password' => ['nullable','string','min:8','confirmed'],
+            'nid-number' => ['nullable','string','max:10','unique:users,nid_number,'.$user->id],
+            'nid_verification_photo' => ['nallable','image','mimes:jpeg,png,jpg,gif,svg','max:2048'],
+             'user_photo' => ['nullable','image','mimes:jpeg,png,jpg,gif,svg','max:2048'],
+        ]);
+
+        $uploadpath = public_path('uploads');
+        if(!File::exists($uploadpath))
+        {
+            File::makeDirectory($uploadpath, 0755, true);
+        }
+
+        if($request->hasFile('nid_verification_photo'))
+        {
+            if($users->nid_verification_photo && file::exists(public_path($users->nid_validation_photo)))
+            {
+                File::delete(public_path($users->nid_validation_photo));
+            }
+
+            $file = $request->file('nid_verification_photo');
+            $filename = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
+            $file->move($uploadpath, $filename);
+            $data['nid_verification_photo'] = 'uploads/'.$filename;
+
+        }
+
+        $users->update($data);
+
+        return redirect()->back()->with('success', 'User updated successfully!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
+    
     public function destroy(User $user)
     {
-        //
+        if($user->nid_verification_photo && file::exists(public_path($user->nid_verification_photo)))
+        {
+            File::delete(public_path($user->nid_verification_photo));
+        }
+
+        $user->delete();
+
+        return redirect()->back()->with('success', 'User deleted successfully!');
     }
 }

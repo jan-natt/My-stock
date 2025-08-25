@@ -26,7 +26,4 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 Route::get('/gainers', [gainController::class, 'gain'])->name('gainers');
 
-
-Route::get('/register', [UserController::class, 'create'])->name('register');
-Route::post('/register', [UserController::class, 'store'])->name('register.store');
-Route::get('/users', [UserController::class, 'index'])->name('users.index');
+Route::resource('users', UserController::class);
