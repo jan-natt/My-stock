@@ -129,6 +129,7 @@
         <a href="/register" class="btn btn-lg btn-success pulse">Join Now</a>
     </div>
 </div>
+
 @endsection
 
 @push('scripts')
