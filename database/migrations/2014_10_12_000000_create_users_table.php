@@ -19,7 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->string('phone')->unique(); // Added phone number
             $table->string('password');
-            $table->string('nid_number')->unique()->nullable(); // Added NID number
+            $table->string('nid_number')->nullable(); // Added NID number
             $table->string('nid_verification_photo')->nullable(); // NID verification photo path
             $table->string('user_photo')->default('default.png'); // User profile photo
             $table->rememberToken();

@@ -26,9 +26,9 @@ class UserController extends Controller
         $validated = $request->validate([
             'name' => ['required','string','max:255'],
             'email' => ['required','email','max:120','unique:users,email'],
-            'phone' => ['nullable','string','max:11'],
+            'phone' => ['required','string','max:11','unique:users,phone'],
             'password' => ['required','string','min:8','confirmed'],
-            'nid-number' => ['nullable','string','max:10','unique:users,nid_number'],
+            'nid-number' => ['required','string','max:10'],
             'nid_verification_photo' => ['nullable','image','mimes:jpeg,png,jpg,gif,svg','max:2048'],
              'user_photo' => ['nullable','image','mimes:jpeg,png,jpg,gif,svg','max:2048'],
         ]);
@@ -45,9 +45,17 @@ class UserController extends Controller
         if($request->hasFile('nid_verification_photo'))
             {
                $file = $request->file('nid_verification_photo');
-               $filename = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
+               $filename = 'use_nid_'.time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
                $file->move($uploadpath, $filename);
                $data['nid_verification_photo'] = 'uploads/'.$filename;
+            }
+
+            if($request->hasFile('user_photo'))
+            {
+                $file = $request->file('user_photo');
+                $filename = 'user_photo_'.time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
+                $file->move($uploadpath, $filename);
+                $data['user_photo'] = 'uploads/'.$filename;
             }
 
         User::create($data);
@@ -55,29 +63,28 @@ class UserController extends Controller
             return redirect()->back()->with('success', 'User created successfully!');
         }
     
-    public function show(User $user)
+    public function show(User $users)
     {
-        return view('users.show',compact('user'));
+        return view('users.show',compact('users'));
     }
 
     
-    public function edit(User $user)
+    public function edit(User $users)
     {
-        return view('users.edit',compact('user'));
+        return view('users.edit',compact('users'));
     }
 
-    public function update(Request $request, User $user)
+    public function update(Request $request, User $users)
     {
-        $data = $request->validate([
+        $validated = $request->validate([
             'name' => ['required','string','max:255'],
-            'email' => ['required','email','max:120','unique:users,email,'.$user->id],
-            'phone' => ['nullable','string','max:11'],
-            'password' => ['nullable','string','min:8','confirmed'],
-            'nid-number' => ['nullable','string','max:10','unique:users,nid_number,'.$user->id],
+            'email' => ['required','email','max:120','unique:users,email,'.$users->id],
+            'phone' => ['required','string','max:11','unique:users,phone,'.$users->id],
+            'password' => ['required','string','min:8','confirmed'],
+            'nid-number' => ['required','string','max:10'],
             'nid_verification_photo' => ['nullable','image','mimes:jpeg,png,jpg,gif,svg','max:2048'],
              'user_photo' => ['nullable','image','mimes:jpeg,png,jpg,gif,svg','max:2048'],
         ]);
-
         $uploadpath = public_path('uploads');
         if(!File::exists($uploadpath))
         {
@@ -86,31 +93,44 @@ class UserController extends Controller
 
         if($request->hasFile('nid_verification_photo'))
         {
-            if($user->nid_verification_photo && File::exists(public_path($user->nid_verification_photo)))
+            if($users->nid_verification_photo && File::exists(public_path($users->nid_verification_photo)))
             {
-                File::delete(public_path($user->nid_verification_photo));
+                File::delete(public_path($users->nid_verification_photo));
             }
 
             $file = $request->file('nid_verification_photo');
-            $filename = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
+            $filename = 'use_nid_'.time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
             $file->move($uploadpath, $filename);
             $data['nid_verification_photo'] = 'uploads/'.$filename;
         }
 
-        $user->update($data);
+        if($request->hasFile('user_photo'))
+        {
+            if($users->user_photo && File::exists(public_path($users->user_photo)))
+            {
+                File::delete(public_path($users->user_photo));
+            }
+
+            $file = $request->file('user_photo');
+            $filename = 'user_photo_'.time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
+            $file->move($uploadpath, $filename);
+            $data['user_photo'] = 'uploads/'.$filename;
+        }
+
+        $users->update($data);
 
         return redirect()->back()->with('success', 'User updated successfully!');
     }
 
     
-    public function destroy(User $user)
+    public function destroy(User $users)
     {
-        if($user->nid_verification_photo && File::exists(public_path($user->nid_verification_photo)))
+        if($users->nid_verification_photo && File::exists(public_path($users->nid_verification_photo)))
         {
-            File::delete(public_path($user->nid_verification_photo));
+            File::delete(public_path($users->nid_verification_photo));
         }
 
-        $user->delete();
+        $users->delete();
 
         return redirect()->back()->with('success', 'User deleted successfully!');
     }
