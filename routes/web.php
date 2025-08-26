@@ -32,3 +32,4 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/about',[App\Http\Controllers\AboutController::class,'index'])->name('about');
+Route::get('/pricing',[App\Http\Controllers\pricingController::class,'index'])->name('pricing');
